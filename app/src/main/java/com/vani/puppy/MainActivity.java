@@ -5,20 +5,24 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.tabs.TabLayout;
+import androidx.viewpager.widget.ViewPager;
+
+import com.vani.puppy.adapter.PageAdapter;
+import com.vani.puppy.fragments.RecyclerViewFragment;
+import com.vani.puppy.fragments.PerfilMascotaFragment;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Toolbar toolbar;
-    private RecyclerView rvMascotas;
-    private ArrayList<Mascota> mascotas;
-    private MascotaAdapter adapter;
+    private MaterialToolbar toolbar;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,41 +32,49 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        rvMascotas = findViewById(R.id.rvMascotas);
-        rvMascotas.setLayoutManager(new LinearLayoutManager(this));
+        tabLayout = findViewById(R.id.tabLayout);
+        viewPager = findViewById(R.id.viewPager);
 
-        inicializarListaMascotas();
-        inicializarAdapter();
+        setUpViewPager();
     }
 
-    private void inicializarListaMascotas() {
-        mascotas = new ArrayList<>();
+    // 🔹 ViewPager + Fragments
+    private void setUpViewPager() {
+        ArrayList<Fragment> fragments = new ArrayList<>();
 
-        mascotas.add(new Mascota(R.drawable.mascota1, "Koda", 5));
-        mascotas.add(new Mascota(R.drawable.mascota2, "Milo", 3));
-        mascotas.add(new Mascota(R.drawable.mascota3, "Luna", 4));
-        mascotas.add(new Mascota(R.drawable.mascota4, "Simba", 2));
-        mascotas.add(new Mascota(R.drawable.mascota5, "Nala", 1));
+        fragments.add(new RecyclerViewFragment()); // Inicio
+        fragments.add(new PerfilMascotaFragment()); // Perfil
+
+        viewPager.setAdapter(new PageAdapter(getSupportFragmentManager(), fragments));
+        tabLayout.setupWithViewPager(viewPager);
+
+        tabLayout.getTabAt(0).setText("Inicio");
+        tabLayout.getTabAt(1).setText("Perfil");
     }
 
-    private void inicializarAdapter() {
-        adapter = new MascotaAdapter(mascotas);
-        rvMascotas.setAdapter(adapter);
-    }
-
+    // 🔹 Menú (3 puntitos)
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_opciones, menu);
         return true;
     }
 
+    // 🔹 Acciones del menú
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.menu_favoritos) {
-            Intent intent = new Intent(MainActivity.this, FavoritosActivity.class);
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.menu_contacto) {
+            Intent intent = new Intent(this, ContactoActivity.class);
             startActivity(intent);
             return true;
         }
+
+        if (item.getItemId() == R.id.menu_acerca) {
+            Intent intent = new Intent(this, AcercaDeActivity.class);
+            startActivity(intent);
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 }

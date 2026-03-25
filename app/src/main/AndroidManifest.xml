@@ -11,6 +11,8 @@
         android:theme="@style/Theme.PuppyApp">
 
         <activity android:name=".FavoritosActivity" />
+        <activity android:name=".ContactoActivity"/>
+        <activity android:name=".AcercaDeActivity"/>
 
         <activity
             android:name=".MainActivity"
